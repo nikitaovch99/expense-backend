@@ -6,7 +6,7 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -16,7 +16,7 @@ import { UsersModule } from './users/users.module';
       password: process.env.POSTGRESS_PASSWORD,
       database: process.env.POSTGRES_DB,
       entities: [],
-      synchronize: true,
+      synchronize: process.env.NODE_ENV === 'development' ? true : false,
     }),
     UsersModule,
   ],
