@@ -16,6 +16,9 @@ export class SessionAuthService {
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.getUserByUsername(username);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const passwordEquals = await bcrypt.compare(password, user.password);
 
     if (user && passwordEquals) {
