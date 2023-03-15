@@ -38,14 +38,13 @@ export class SessionAuthModule implements NestModule {
 
   public express = session({
     cookie: {
-      maxAge: 86400000,
+      maxAge: Number(process.env.SESSION_TOKEN_MAXAGE),
     },
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: new TypeormStore({ cleanupLimit: 2, limitSubquery: false }).connect(
-      this.sessionRepository,
-    ),
+    rolling: true,
+    store: new TypeormStore().connect(this.sessionRepository),
   });
 
   configure(consumer: MiddlewareConsumer) {
