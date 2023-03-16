@@ -25,6 +25,17 @@ export interface UserPayload {
   transactions: Transaction[];
 }
 
+export interface NormalizedUser {
+  id: number;
+  username: string;
+  displayName: string;
+  role: Role;
+  categories: Category[];
+  transactions: Transaction[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Entity({ name: 'users' })
 export class User {
   @ApiProperty({ example: '1', description: 'unique identificator' })
@@ -48,10 +59,12 @@ export class User {
   })
   role!: Role;
 
-  @OneToMany(() => Category, (category) => category.user)
+  @OneToMany(() => Category, (category) => category.user, { cascade: true })
   categories!: Category[];
 
-  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  @OneToMany(() => Transaction, (transaction) => transaction.user, {
+    cascade: true,
+  })
   transactions!: Transaction[];
 
   @ApiProperty({
