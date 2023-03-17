@@ -1,6 +1,8 @@
 import {
+  forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -12,13 +14,14 @@ import { Request } from 'express';
 
 @Injectable()
 export class SessionAuthService {
-  constructor(private userService: UsersService) {}
+  constructor(
+    @Inject(forwardRef(() => UsersService))
+    private userService: UsersService,
+  ) {}
 
   async validateUser(username: string, password: string) {
-    const user = await this.userService.getUserByUsername(username);
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
+    const user = await this.userService.getUserByUsernameOrFail(username);
+
     const passwordEquals = await bcrypt.compare(password, user.password);
 
     if (user && passwordEquals) {

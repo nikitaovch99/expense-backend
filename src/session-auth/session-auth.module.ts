@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  forwardRef,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from 'src/categories/categories.entity';
@@ -15,6 +20,8 @@ import { Session } from './session.entity';
 import * as passport from 'passport';
 import * as session from 'express-session';
 import { Repository } from 'typeorm';
+import { Transaction } from 'src/transactions/transactions.entity';
+import { TransactionsService } from 'src/transactions/transactions.service';
 @Module({
   controllers: [SessionAuthController],
   providers: [
@@ -23,12 +30,14 @@ import { Repository } from 'typeorm';
     UsersService,
     CategoriesService,
     UserSerializer,
+    TransactionsService,
   ],
   imports: [
-    TypeOrmModule.forFeature([User, Category, Session]),
-    UsersModule,
+    TypeOrmModule.forFeature([User, Category, Session, Transaction]),
+    forwardRef(() => UsersModule),
     PassportModule.register({ session: true }),
   ],
+  exports: [SessionAuthService],
 })
 export class SessionAuthModule implements NestModule {
   constructor(

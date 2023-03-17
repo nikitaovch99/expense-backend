@@ -6,6 +6,15 @@ import {
   Index,
   PrimaryColumn,
 } from 'typeorm';
+import { Session as ExpressSession } from 'express-session';
+
+interface Passport {
+  user: string;
+}
+
+export interface SessionParam extends ExpressSession {
+  passport: Passport;
+}
 
 @Entity()
 export class Session implements ISession {
