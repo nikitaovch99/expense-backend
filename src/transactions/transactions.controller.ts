@@ -34,7 +34,7 @@ export class TransactionsController {
     return this.transactionService.create(dto, session.passport.user);
   }
 
-  @ApiOperation({ summary: 'Get all categories' })
+  @ApiOperation({ summary: 'Get all transactions (for Admins)' })
   @ApiResponse({ status: 200, type: [Transaction] })
   @Roles('ADMIN')
   @UseGuards(IsAuthenticatedGuard, RolesGuard)
@@ -50,7 +50,6 @@ export class TransactionsController {
   getUserTransactions(
     @Session() session: SessionParam,
   ): Promise<Transaction[]> {
-    console.log({ session });
     return this.transactionService.getUserTransactions(session.passport.user);
   }
 

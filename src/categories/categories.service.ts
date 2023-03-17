@@ -12,7 +12,7 @@ import { TransactionsService } from 'src/transactions/transactions.service';
 import { Role, User } from 'src/users/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
-import { Category } from './categories.entity';
+import { Category, NormalizedCategory } from './categories.entity';
 import { createCategoryDto } from './dto/create-category.dto';
 
 @Injectable()
@@ -25,7 +25,10 @@ export class CategoriesService {
     private transactionService: TransactionsService,
   ) {}
 
-  async createCategory(dto: createCategoryDto, username: string) {
+  async createCategory(
+    dto: createCategoryDto,
+    username: string,
+  ): Promise<NormalizedCategory> {
     const user = await this.userService.getUserByUsernameOrFail(username);
 
     const categoryExists = user.categories.find(
@@ -44,11 +47,16 @@ export class CategoriesService {
     return this.normalizeCategory(savedCategory);
   }
 
-  async getCategoryById(id: number, username: string) {
+  async createDefaultCategory(): Promise<Category> {
+    const category = this.categoryRepository.create({ label: 'Інше' });
+    return this.categoryRepository.save(category);
+  }
+
+  async getCategoryById(id: number, username: string): Promise<Category> {
     const user = await this.userService.getUserByUsernameOrFail(username);
     const category = await this.categoryRepository.findOne({
       where: { id },
-      relations: ['transactions', 'user'],
+      relations: { transactions: true, user: { categories: true } },
     });
     if (!category) {
       throw new NotFoundException('Category not found');
@@ -62,7 +70,11 @@ export class CategoriesService {
     return category;
   }
 
-  async getAllUserCategories(username: string) {
+  async getAll(): Promise<Category[]> {
+    return this.categoryRepository.find();
+  }
+
+  async getAllUserCategories(username: string): Promise<Category[]> {
     const user = await this.userService.getUserByUsernameOrFail(username);
     const categories = await this.categoryRepository.find({
       where: { user: { id: user.id } },
@@ -70,21 +82,21 @@ export class CategoriesService {
     return categories;
   }
 
-  async removeCategory(id: number, username: string) {
+  async removeCategory(id: number, username: string): Promise<void> {
     const category = await this.getCategoryById(id, username);
     if (category.label === 'Інше') {
       throw new BadRequestException('Can not delete category Інше');
     }
 
+    const anotherCategory = category.user.categories.find(
+      (category) => category.label === 'Інше',
+    );
+
     await Promise.all(
       category.transactions.map(async (transaction) => {
-        await this.transactionService.create(
-          {
-            label: transaction.label,
-            amount: transaction.amount,
-            date: transaction.date,
-            categoryLabel: 'Інше',
-          },
+        await this.transactionService.updateTransaction(
+          { category: anotherCategory },
+          transaction.id,
           username,
         );
       }),
@@ -102,7 +114,11 @@ export class CategoriesService {
     await this.categoryRepository.remove(category);
   }
 
-  async updateCategory(label: string, id: number, username: string) {
+  async updateCategory(
+    label: string,
+    id: number,
+    username: string,
+  ): Promise<NormalizedCategory> {
     const category = await this.getCategoryById(id, username);
     if (category.label === 'Інше') {
       throw new BadRequestException('Can not update category Інше');
@@ -113,7 +129,7 @@ export class CategoriesService {
     return this.normalizeCategory(savedCategory);
   }
 
-  async getUsersCategoryByLabel(label: string, user: User) {
+  async getUsersCategoryByLabel(label: string, user: User): Promise<Category> {
     const category = user.categories.find(
       (category) => category.label === label,
     );
@@ -125,7 +141,7 @@ export class CategoriesService {
     return category;
   }
 
-  normalizeCategory({ id, label, createdAt, updatedAt }) {
+  normalizeCategory({ id, label, createdAt, updatedAt }): NormalizedCategory {
     return { id, label, createdAt, updatedAt };
   }
 }

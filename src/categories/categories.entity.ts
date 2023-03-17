@@ -11,6 +11,13 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export interface NormalizedCategory {
+  id: number;
+  label: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 @Entity({ name: 'categories' })
 export class Category {
   @ApiProperty({ example: '1', description: 'unique identificator' })
@@ -20,7 +27,9 @@ export class Category {
   @Column()
   label!: string;
 
-  @ManyToOne(() => User, (user) => user.categories)
+  @ManyToOne(() => User, (user) => user.categories, {
+    onDelete: 'CASCADE',
+  })
   user!: User;
 
   @OneToMany(() => Transaction, (transaction) => transaction.category, {
@@ -33,12 +42,12 @@ export class Category {
     description: 'time of creation',
   })
   @CreateDateColumn()
-  createdAt: string;
+  createdAt: Date;
 
   @ApiProperty({
     example: '2023-03-10T09:00:32.011Z',
     description: 'time when the field was updated',
   })
   @UpdateDateColumn()
-  updatedAt: string;
+  updatedAt: Date;
 }

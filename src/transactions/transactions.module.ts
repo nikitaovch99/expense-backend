@@ -5,7 +5,6 @@ import { CategoriesModule } from 'src/categories/categories.module';
 import { CategoriesService } from 'src/categories/categories.service';
 import { SessionAuthService } from 'src/session-auth/session-auth.service';
 import { User } from 'src/users/users.entity';
-import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
 import { TransactionsController } from './transactions.controller';
 import { Transaction } from './transactions.entity';

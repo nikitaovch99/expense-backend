@@ -34,19 +34,17 @@ export class UsersService {
   ) {}
 
   async createUser(dto: CreateUserDto): Promise<User> {
-    const category = await this.categoryService.createCategory(
-      {
-        label: 'Інше',
-      },
-      dto.username,
-    );
+    const category = await this.categoryService.createDefaultCategory();
     const hashPassword = await bcrypt.hash(dto.password, 5);
     const categories = [category];
-    const user = await this.userRepository.save({
+    const user = this.userRepository.create({
       ...dto,
       categories,
       password: hashPassword,
     });
+    category.user = user;
+    await this.userRepository.save(user);
+    await this.categoryRepository.save(category);
     return user;
   }
 
@@ -57,7 +55,7 @@ export class UsersService {
     return users.map(this.normalize);
   }
 
-  async getUserById(id: number, username: string) {
+  async getUserById(id: number, username: string): Promise<User> {
     const requester = await this.getUserByUsernameOrFail(username);
     const user = await this.userRepository.findOne({
       where: { id },
