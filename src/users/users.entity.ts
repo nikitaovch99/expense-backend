@@ -32,8 +32,8 @@ export interface NormalizedUser {
   role: Role;
   categories: Category[];
   transactions: Transaction[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 @Entity({ name: 'users' })
@@ -72,12 +72,12 @@ export class User {
     description: 'time of creation',
   })
   @CreateDateColumn()
-  createdAt: string;
+  createdAt: Date;
 
   @ApiProperty({
     example: '2023-03-10T09:00:32.011Z',
     description: 'time when the field was updated',
   })
   @UpdateDateColumn()
-  updatedAt: string;
+  updatedAt: Date;
 }

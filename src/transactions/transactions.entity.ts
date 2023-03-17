@@ -11,9 +11,12 @@ import {
 } from 'typeorm';
 
 export interface NormalizedTransaction {
+  id: number;
   label: string;
   date: Date;
   amount: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 @Entity({ name: 'transactions' })
@@ -43,9 +46,13 @@ export class Transaction {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.transactions)
+  @ManyToOne(() => User, (user) => user.transactions, {
+    onDelete: 'CASCADE',
+  })
   user!: User;
 
-  @ManyToOne(() => Category, (category) => category.transactions)
+  @ManyToOne(() => Category, (category) => category.transactions, {
+    onDelete: 'CASCADE',
+  })
   category?: Category;
 }

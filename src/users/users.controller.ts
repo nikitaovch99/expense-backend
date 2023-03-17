@@ -26,7 +26,7 @@ import { SessionParam } from 'src/session-auth/session.entity';
 export class UsersController {
   constructor(private userService: UsersService) {}
 
-  @ApiOperation({ summary: 'Create a User' })
+  @ApiOperation({ summary: 'Create a User (for Admins)' })
   @ApiResponse({ status: 201, type: User })
   @Post()
   @Roles('ADMIN')
@@ -35,7 +35,7 @@ export class UsersController {
     return this.userService.createUser(userDto);
   }
 
-  @ApiOperation({ summary: 'Get all users' })
+  @ApiOperation({ summary: 'Get all users (for Admins)' })
   @ApiResponse({ status: 200, type: [User] })
   @Roles('ADMIN')
   @UseGuards(IsAuthenticatedGuard, RolesGuard)

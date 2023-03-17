@@ -42,18 +42,6 @@ export class TransactionsService {
     return this.normalizeTransaction(savedTransaction);
   }
 
-  // async createOne(dto: createTransactionDto, username: string) {
-  //   const user = await this.userService.getUserByUsernameOrFail(username);
-  //   const category = await this.categoryService.getUsersCategoryByLabel(
-  //     dto.categoryLabel,
-  //     user,
-  //   );
-
-  //   const transaction = this.transactionRepository.create(dto);
-  //   transaction.user = user;
-  //   transaction.category = category;
-  // }
-
   async getUserTransactions(username: string): Promise<Transaction[]> {
     const user = await this.userService.getUserByUsernameOrFail(username);
     const transactions = await this.transactionRepository.find({
@@ -63,7 +51,7 @@ export class TransactionsService {
     return transactions;
   }
 
-  async getAll() {
+  async getAll(): Promise<Transaction[]> {
     return this.transactionRepository.find();
   }
 
@@ -95,6 +83,7 @@ export class TransactionsService {
     dto.label && (transaction.label = dto.label);
     dto.amount && (transaction.amount = dto.amount);
     dto.date && (transaction.date = dto.date);
+    dto.category && (transaction.category = dto.category);
     const savedTransaction = await this.transactionRepository.save(transaction);
 
     return this.normalizeTransaction(savedTransaction);
@@ -106,7 +95,14 @@ export class TransactionsService {
     await this.transactionRepository.remove(transaction);
   }
 
-  normalizeTransaction({ label, amount, date }) {
-    return { label, amount, date };
+  normalizeTransaction({
+    id,
+    label,
+    amount,
+    date,
+    createdAt,
+    updatedAt,
+  }): NormalizedTransaction {
+    return { id, label, amount, date, createdAt, updatedAt };
   }
 }
