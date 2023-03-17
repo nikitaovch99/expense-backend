@@ -16,7 +16,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/users/users.entity';
 
 @ApiTags('Session-Authorization')
-@Controller('session-auth')
+@Controller('auth')
 export class SessionAuthController {
   constructor(private authService: SessionAuthService) {}
 
