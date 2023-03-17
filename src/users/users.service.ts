@@ -11,7 +11,7 @@ import { CategoriesService } from 'src/categories/categories.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { NormalizedUser, User } from './users.entity';
+import { NormalizedUser, Role, User } from './users.entity';
 import * as bcrypt from 'bcryptjs';
 import { Category } from 'src/categories/categories.entity';
 import { Transaction } from 'src/transactions/transactions.entity';
@@ -57,16 +57,28 @@ export class UsersService {
     return users.map(this.normalize);
   }
 
-  async remove(id: number): Promise<void> {
+  async getUserById(id: number, username: string) {
+    const requester = await this.getUserByUsernameOrFail(username);
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['categories', 'transactions'],
+      relations: ['transactions', 'categories'],
     });
-
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    if (user.role === 'ADMIN') {
+    if (requester.role !== Role.Admin && requester.id !== id) {
+      throw new HttpException(
+        'You have no access to other users',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    return user;
+  }
+
+  async remove(id: number, username: string, req: Request): Promise<void> {
+    const requester = await this.getUserByUsernameOrFail(username);
+    const user = await this.getUserById(id, username);
+    if (requester.role === Role.Admin && user.role === Role.Admin) {
       throw new HttpException(
         'You can not delete another Administrator',
         HttpStatus.BAD_REQUEST,
@@ -74,29 +86,39 @@ export class UsersService {
     }
 
     await Promise.all(
-      user.categories.map(async (category) => {
-        await this.categoryRepository.remove(category);
-      }),
-    );
-
-    await Promise.all(
       user.transactions.map(async (transaction) => {
         await this.transactionRepository.remove(transaction);
       }),
     );
 
+    await Promise.all(
+      user.categories.map(async (category) => {
+        await this.categoryRepository.remove(category);
+      }),
+    );
+    if (requester.id === user.id) {
+      await this.authService.logout(req);
+    }
     await this.userRepository.remove(user);
   }
 
   async update(
+    id: number,
     username: string,
-    { displayName, password }: UpdateUserDto,
+    { displayName, password, role }: UpdateUserDto,
     req: Request,
   ): Promise<NormalizedUser> {
-    const user = await this.getUserByUsernameOrFail(username);
-    console.log({ username }, { user });
+    const requester = await this.getUserByUsernameOrFail(username);
+    const user = await this.getUserById(id, username);
 
-    if (!password && !displayName) {
+    if (requester.role === Role.Admin && user.role === Role.Admin) {
+      throw new HttpException(
+        'You can not update another Administrator',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (!password && !displayName && !role) {
       throw new HttpException(
         'No parameters were passed',
         HttpStatus.BAD_REQUEST,
@@ -105,10 +127,16 @@ export class UsersService {
 
     displayName && (user.displayName = displayName);
 
+    if (role && requester.role === Role.Admin) {
+      user.role = role;
+    }
+
     if (password) {
       const hashPassword = await bcrypt.hash(password, 5);
       user.password = hashPassword;
-      await this.authService.logout(req);
+      if (id === requester.id) {
+        await this.authService.logout(req);
+      }
     }
 
     await this.userRepository.save(user);

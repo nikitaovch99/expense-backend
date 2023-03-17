@@ -45,24 +45,37 @@ export class UsersController {
     return users;
   }
 
+  @ApiOperation({ summary: 'Get a user' })
+  @ApiResponse({ status: 200, type: User })
+  @UseGuards(IsAuthenticatedGuard)
+  @Get(':id')
+  getOne(@Param('id') id: string, @Session() session: SessionParam) {
+    const user = this.userService.getUserById(+id, session.passport.user);
+    return user;
+  }
+
   @ApiOperation({ summary: 'Delete a User' })
   @ApiResponse({ status: 200 })
   @Delete(':id')
-  @Roles('ADMIN')
-  @UseGuards(IsAuthenticatedGuard, RolesGuard)
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @UseGuards(IsAuthenticatedGuard)
+  remove(
+    @Param('id') id: string,
+    @Session() session: SessionParam,
+    @Req() req: Request,
+  ) {
+    return this.userService.remove(+id, session.passport.user, req);
   }
 
   @ApiOperation({ summary: 'Update a User' })
   @ApiResponse({ status: 200, type: User })
-  @Patch()
+  @Patch(':id')
   @UseGuards(IsAuthenticatedGuard)
   update(
     @Body() dto: UpdateUserDto,
     @Req() req: Request,
     @Session() session: SessionParam,
+    @Param('id') id: string,
   ) {
-    return this.userService.update(session.passport.user, dto, req);
+    return this.userService.update(+id, session.passport.user, dto, req);
   }
 }
