@@ -23,7 +23,9 @@ export class Category {
   @ManyToOne(() => User, (user) => user.categories)
   user!: User;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.category)
+  @OneToMany(() => Transaction, (transaction) => transaction.category, {
+    cascade: true,
+  })
   transactions!: Transaction[];
 
   @ApiProperty({
