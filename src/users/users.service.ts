@@ -33,10 +33,6 @@ export class UsersService {
     private authService: SessionAuthService,
   ) {}
 
-  setUserRepository(repository: Repository<User>) {
-    this.userRepository = repository;
-  }
-
   async createUser(dto: CreateUserDto): Promise<User> {
     const candidate = await this.getUserByUsername(dto.username);
     if (candidate) {
