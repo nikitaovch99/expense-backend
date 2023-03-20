@@ -6,14 +6,14 @@ import {
   Session,
   UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { SessionAuthService } from './session-auth.service';
 import { Session as ExpressSession } from 'express-session';
 import { IsAuthenticatedGuard } from './guards/is-authenticated/is-authenticated.guard';
 import { Request } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/users/users.entity';
+import { User } from '../users/users.entity';
 
 @ApiTags('Session-Authorization')
 @Controller('auth')
@@ -21,7 +21,7 @@ export class SessionAuthController {
   constructor(private authService: SessionAuthService) {}
 
   @ApiOperation({ summary: 'Log in a User' })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 201 })
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Session() session: ExpressSession) {

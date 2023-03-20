@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/users.entity';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/users.entity';
 
 type serializeDone = (error: Error | null, id: string | null) => void;
 type deserializeDone = (

@@ -7,8 +7,8 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UsersService } from 'src/users/users.service';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { Request } from 'express';
 
@@ -33,15 +33,6 @@ export class SessionAuthService {
     });
   }
   async registration(userDto: CreateUserDto) {
-    const candidate = await this.userService.getUserByUsername(
-      userDto.username,
-    );
-    if (candidate) {
-      throw new HttpException(
-        'This username already registered',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const user = await this.userService.createUser(userDto);
     return user;
   }

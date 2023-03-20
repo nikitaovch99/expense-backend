@@ -8,9 +8,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TransactionsService } from 'src/transactions/transactions.service';
-import { Role, User } from 'src/users/users.entity';
-import { UsersService } from 'src/users/users.service';
+import { TransactionsService } from '../transactions/transactions.service';
+import { Role, User } from '../users/users.entity';
+import { UsersService } from '../users/users.service';
 import { Repository } from 'typeorm';
 import { Category, NormalizedCategory } from './categories.entity';
 import { createCategoryDto } from './dto/create-category.dto';
@@ -24,6 +24,10 @@ export class CategoriesService {
     @Inject(forwardRef(() => TransactionsService))
     private transactionService: TransactionsService,
   ) {}
+
+  setCategoryRepository(repository: Repository<Category>) {
+    this.categoryRepository = repository;
+  }
 
   async createCategory(
     dto: createCategoryDto,

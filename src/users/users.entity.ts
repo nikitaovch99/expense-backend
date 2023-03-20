@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Category } from 'src/categories/categories.entity';
-import { Transaction } from 'src/transactions/transactions.entity';
+import { Category } from '../categories/categories.entity';
+import { Transaction } from '../transactions/transactions.entity';
 import {
   Entity,
   Column,

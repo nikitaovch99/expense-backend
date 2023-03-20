@@ -1,11 +1,11 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Category } from 'src/categories/categories.entity';
-import { CategoriesModule } from 'src/categories/categories.module';
-import { CategoriesService } from 'src/categories/categories.service';
-import { SessionAuthService } from 'src/session-auth/session-auth.service';
-import { User } from 'src/users/users.entity';
-import { UsersService } from 'src/users/users.service';
+import { Category } from '../categories/categories.entity';
+import { CategoriesModule } from '../categories/categories.module';
+import { CategoriesService } from '../categories/categories.service';
+import { SessionAuthService } from '../session-auth/session-auth.service';
+import { User } from '../users/users.entity';
+import { UsersService } from '../users/users.service';
 import { TransactionsController } from './transactions.controller';
 import { Transaction } from './transactions.entity';
 import { TransactionsService } from './transactions.service';

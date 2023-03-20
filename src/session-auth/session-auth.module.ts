@@ -6,12 +6,12 @@ import {
 } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
-import { Category } from 'src/categories/categories.entity';
-import { CategoriesService } from 'src/categories/categories.service';
-import { LocalStrategy } from 'src/strategies/local-strategy';
-import { User } from 'src/users/users.entity';
-import { UsersModule } from 'src/users/users.module';
-import { UsersService } from 'src/users/users.service';
+import { Category } from '../categories/categories.entity';
+import { CategoriesService } from '../categories/categories.service';
+import { LocalStrategy } from '../strategies/local-strategy';
+import { User } from '../users/users.entity';
+import { UsersModule } from '../users/users.module';
+import { UsersService } from '../users/users.service';
 import { SessionAuthController } from './session-auth.controller';
 import { SessionAuthService } from './session-auth.service';
 import { UserSerializer } from './session-auth.user.serializer';
@@ -20,8 +20,8 @@ import { Session } from './session.entity';
 import * as passport from 'passport';
 import * as session from 'express-session';
 import { Repository } from 'typeorm';
-import { Transaction } from 'src/transactions/transactions.entity';
-import { TransactionsService } from 'src/transactions/transactions.service';
+import { Transaction } from '../transactions/transactions.entity';
+import { TransactionsService } from '../transactions/transactions.service';
 @Module({
   controllers: [SessionAuthController],
   providers: [
