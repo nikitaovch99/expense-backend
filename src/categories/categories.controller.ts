@@ -8,7 +8,6 @@ import {
   Post,
   Session,
   UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IsAuthenticatedGuard } from '../session-auth/guards/is-authenticated/is-authenticated.guard';
