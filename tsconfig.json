@@ -19,7 +19,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "importsNotUsedAsValues": "remove"
+    "importsNotUsedAsValues": "remove",
   },
   "exclude": ["node_modules", "dist"]
 }
