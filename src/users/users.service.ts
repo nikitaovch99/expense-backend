@@ -7,15 +7,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CategoriesService } from 'src/categories/categories.service';
+import { CategoriesService } from '../categories/categories.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { NormalizedUser, Role, User } from './users.entity';
 import * as bcrypt from 'bcryptjs';
-import { Category } from 'src/categories/categories.entity';
-import { Transaction } from 'src/transactions/transactions.entity';
-import { SessionAuthService } from 'src/session-auth/session-auth.service';
+import { Category } from '../categories/categories.entity';
+import { Transaction } from '../transactions/transactions.entity';
+import { SessionAuthService } from '../session-auth/session-auth.service';
 import { Request } from 'express';
 
 @Injectable()
@@ -33,7 +33,18 @@ export class UsersService {
     private authService: SessionAuthService,
   ) {}
 
+  setUserRepository(repository: Repository<User>) {
+    this.userRepository = repository;
+  }
+
   async createUser(dto: CreateUserDto): Promise<User> {
+    const candidate = await this.getUserByUsername(dto.username);
+    if (candidate) {
+      throw new HttpException(
+        'This username already registered',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const category = await this.categoryService.createDefaultCategory();
     const hashPassword = await bcrypt.hash(dto.password, 5);
     const categories = [category];

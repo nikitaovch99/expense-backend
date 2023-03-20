@@ -11,15 +11,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Roles } from 'src/session-auth/guards/roles/roles-auth.decorator';
-import { RolesGuard } from 'src/session-auth/guards/roles/roles.guard';
+import { Roles } from '../session-auth/guards/roles/roles-auth.decorator';
+import { RolesGuard } from '../session-auth/guards/roles/roles.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
-import { IsAuthenticatedGuard } from 'src/session-auth/guards/is-authenticated/is-authenticated.guard';
+import { IsAuthenticatedGuard } from '../session-auth/guards/is-authenticated/is-authenticated.guard';
 import { Request } from 'express';
-import { SessionParam } from 'src/session-auth/session.entity';
+import { SessionParam } from '../session-auth/session.entity';
 
 @ApiTags('Users')
 @Controller('users')

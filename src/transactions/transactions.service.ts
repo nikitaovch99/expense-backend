@@ -7,9 +7,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CategoriesService } from 'src/categories/categories.service';
-import { Role } from 'src/users/users.entity';
-import { UsersService } from 'src/users/users.service';
+import { CategoriesService } from '../categories/categories.service';
+import { Role } from '../users/users.entity';
+import { UsersService } from '../users/users.service';
 import { Repository } from 'typeorm';
 import { createTransactionDto } from './dto/create-transaction.dto';
 import { updateTransactionDto } from './dto/update-transaction.dto';

@@ -10,10 +10,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { IsAuthenticatedGuard } from 'src/session-auth/guards/is-authenticated/is-authenticated.guard';
-import { Roles } from 'src/session-auth/guards/roles/roles-auth.decorator';
-import { RolesGuard } from 'src/session-auth/guards/roles/roles.guard';
-import { SessionParam } from 'src/session-auth/session.entity';
+import { IsAuthenticatedGuard } from '../session-auth/guards/is-authenticated/is-authenticated.guard';
+import { Roles } from '../session-auth/guards/roles/roles-auth.decorator';
+import { RolesGuard } from '../session-auth/guards/roles/roles.guard';
+import { SessionParam } from '../session-auth/session.entity';
 import { Category, NormalizedCategory } from './categories.entity';
 import { CategoriesService } from './categories.service';
 import { createCategoryDto } from './dto/create-category.dto';
