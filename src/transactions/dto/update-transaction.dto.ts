@@ -14,5 +14,5 @@ export class updateTransactionDto {
   readonly date?: Date;
   @ApiProperty({ example: Category, description: 'category' })
   @IsString({ message: 'Должно быть строкой' })
-  readonly category?: Category;
+  readonly categoryLabel?: string;
 }

@@ -12,7 +12,6 @@ import { TransactionsService } from '../transactions/transactions.service';
 import * as bcrypt from 'bcryptjs';
 import { HttpException, NotFoundException } from '@nestjs/common';
 import {
-  testCategory,
   testUser2,
   testUser3,
   normalizedTestUser,
@@ -26,6 +25,7 @@ import {
   testNormalizedUser2,
   testNormalizedAndUpdatedUser2,
 } from './user.test-entities';
+import { testCategory } from '../categories/categories.test-entitites';
 
 describe('UserService', () => {
   let userService: UsersService;
@@ -140,7 +140,7 @@ describe('UserService', () => {
 
       expect(result).toEqual(testUser3);
     });
-    it('should throw an error ', async () => {
+    it('should throw an exception ', async () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
       await expect(
         userService.getUserByUsernameOrFail('test3'),
@@ -176,7 +176,7 @@ describe('UserService', () => {
       expect(categoryRepository.save).toHaveBeenCalled();
       expect(result).toEqual(testUser2);
     });
-    it('should throw an error when the candidate already exists ', async () => {
+    it('should throw an exception when the candidate already exists ', async () => {
       jest
         .spyOn(userService, 'getUserByUsername')
         .mockResolvedValueOnce(testUser2);
@@ -247,7 +247,7 @@ describe('UserService', () => {
       expect(authService.logout).toHaveBeenCalledWith(testRequest);
       expect(userRepository.remove).toHaveBeenCalledWith(testUser2);
     });
-    it('should throw an error when Admin tries to remove another Admin', async () => {
+    it('should throw an exception when Admin tries to remove another Admin', async () => {
       jest
         .spyOn(userService, 'getUserByUsernameOrFail')
         .mockResolvedValueOnce(testAdmin);
@@ -284,7 +284,7 @@ describe('UserService', () => {
       expect(userRepository.save).toBeCalledWith(testUser2);
       expect(result).toEqual(testNormalizedAndUpdatedUser2);
     });
-    it('should throw an error when no params ', async () => {
+    it('should throw an exception when no params ', async () => {
       jest
         .spyOn(userService, 'getUserByUsernameOrFail')
         .mockResolvedValueOnce(testAdmin);
@@ -295,7 +295,7 @@ describe('UserService', () => {
       expect(userService.getUserByUsernameOrFail).toBeCalledWith('test1');
       expect(userService.getUserById).toBeCalledWith(2, 'test1');
     });
-    it('should throw an error when Admin tries to update another Admin', async () => {
+    it('should throw an exception when Admin tries to update another Admin', async () => {
       jest
         .spyOn(userService, 'getUserByUsernameOrFail')
         .mockResolvedValueOnce(testAdmin);

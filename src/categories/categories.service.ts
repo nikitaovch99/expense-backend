@@ -25,10 +25,6 @@ export class CategoriesService {
     private transactionService: TransactionsService,
   ) {}
 
-  setCategoryRepository(repository: Repository<Category>) {
-    this.categoryRepository = repository;
-  }
-
   async createCategory(
     dto: createCategoryDto,
     username: string,
@@ -45,8 +41,7 @@ export class CategoriesService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const category = this.categoryRepository.create(dto);
-    category.user = user;
+    const category = this.categoryRepository.create({ ...dto, user });
     const savedCategory = await this.categoryRepository.save(category);
     return this.normalizeCategory(savedCategory);
   }
@@ -92,23 +87,10 @@ export class CategoriesService {
       throw new BadRequestException('Can not delete category Інше');
     }
 
-    const anotherCategory = category.user.categories.find(
-      (category) => category.label === 'Інше',
-    );
-
     await Promise.all(
       category.transactions.map(async (transaction) => {
         await this.transactionService.updateTransaction(
-          { category: anotherCategory },
-          transaction.id,
-          username,
-        );
-      }),
-    );
-
-    await Promise.all(
-      category.transactions.map(async (transaction) => {
-        await this.transactionService.removeTransaction(
+          { categoryLabel: 'Інше' },
           transaction.id,
           username,
         );
@@ -128,7 +110,7 @@ export class CategoriesService {
       throw new BadRequestException('Can not update category Інше');
     }
 
-    category.label = label;
+    category && (category.label = label);
     const savedCategory = await this.categoryRepository.save(category);
     return this.normalizeCategory(savedCategory);
   }
@@ -142,7 +124,12 @@ export class CategoriesService {
       throw new NotFoundException('Category not found');
     }
 
-    return category;
+    const savedCategory = this.categoryRepository.findOne({
+      where: { id: category.id },
+      relations: ['transactions'],
+    });
+
+    return savedCategory;
   }
 
   normalizeCategory({ id, label, createdAt, updatedAt }): NormalizedCategory {
