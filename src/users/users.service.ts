@@ -83,7 +83,11 @@ export class UsersService {
   async remove(id: number, username: string, req: Request): Promise<void> {
     const requester = await this.getUserByUsernameOrFail(username);
     const user = await this.getUserById(id, username);
-    if (requester.role === Role.Admin && user.role === Role.Admin) {
+    if (
+      requester.role === Role.Admin &&
+      user.role === Role.Admin &&
+      requester.id !== user.id
+    ) {
       throw new HttpException(
         'You can not delete another Administrator',
         HttpStatus.BAD_REQUEST,
