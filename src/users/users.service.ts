@@ -98,17 +98,6 @@ export class UsersService {
       );
     }
 
-    await Promise.all(
-      user.transactions.map(async (transaction) => {
-        await this.transactionRepository.remove(transaction);
-      }),
-    );
-
-    await Promise.all(
-      user.categories.map(async (category) => {
-        await this.categoryRepository.remove(category);
-      }),
-    );
     if (requester.id === user.id) {
       await this.authService.logout(req);
     }
@@ -124,7 +113,11 @@ export class UsersService {
     const requester = await this.getUserByUsernameOrFail(username);
     const user = await this.getUserById(id, username);
 
-    if (requester.role === Role.Admin && user.role === Role.Admin) {
+    if (
+      requester.role === Role.Admin &&
+      user.role === Role.Admin &&
+      requester.id !== user.id
+    ) {
       throw new HttpException(
         'You can not update another Administrator',
         HttpStatus.BAD_REQUEST,
