@@ -59,11 +59,15 @@ export class User {
   })
   role!: Role;
 
-  @OneToMany(() => Category, (category) => category.user, { cascade: true })
+  @OneToMany(() => Category, (category) => category.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   categories!: Category[];
 
   @OneToMany(() => Transaction, (transaction) => transaction.user, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   transactions!: Transaction[];
 
