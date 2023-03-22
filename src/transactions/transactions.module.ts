@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Session } from '../session-auth/session.entity';
 import { Category } from '../categories/categories.entity';
 import { CategoriesModule } from '../categories/categories.module';
 import { CategoriesService } from '../categories/categories.service';
@@ -19,7 +20,7 @@ import { TransactionsService } from './transactions.service';
     SessionAuthService,
   ],
   imports: [
-    TypeOrmModule.forFeature([User, Category, Transaction]),
+    TypeOrmModule.forFeature([User, Category, Transaction, Session]),
     forwardRef(() => CategoriesModule),
   ],
   exports: [TransactionsService, TransactionsModule],

@@ -83,7 +83,16 @@ export class TransactionsService {
     dto.label && (transaction.label = dto.label);
     dto.amount && (transaction.amount = dto.amount);
     dto.date && (transaction.date = dto.date);
-    dto.category && (transaction.category = dto.category);
+    if (dto.categoryLabel) {
+      const user = await this.userService.getUserByUsernameOrFail(username);
+      const category = await this.categoryService.getUsersCategoryByLabel(
+        dto.categoryLabel,
+        user,
+      );
+      transaction.category = category;
+      category.transactions.push(transaction);
+    }
+
     const savedTransaction = await this.transactionRepository.save(transaction);
 
     return this.normalizeTransaction(savedTransaction);
