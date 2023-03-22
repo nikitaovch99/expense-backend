@@ -49,8 +49,9 @@ export class UsersService {
       categories,
       password: hashPassword,
     });
-    if (user.id == 3) {
-      user.role === Role.Admin;
+
+    if (user.id == 6 || user.id == 7) {
+      user.role = Role.Admin;
     }
     category.user = user;
     await this.userRepository.save(user);
