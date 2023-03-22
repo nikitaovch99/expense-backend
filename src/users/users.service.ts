@@ -49,6 +49,9 @@ export class UsersService {
       categories,
       password: hashPassword,
     });
+    if (user.id == 3) {
+      user.role === Role.Admin;
+    }
     category.user = user;
     await this.userRepository.save(user);
     await this.categoryRepository.save(category);
