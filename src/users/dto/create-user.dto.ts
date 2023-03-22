@@ -12,8 +12,4 @@ export class CreateUserDto {
   @ApiProperty({ example: 'first', description: 'Displayed name' })
   @IsString({ message: 'Должно быть строкой' })
   readonly displayName: string;
-  // @ApiProperty({ description: 'array of categories' })
-  // readonly categories: [];
-  // @ApiProperty({ description: 'array of transactions' })
-  // readonly transactions: [];
 }

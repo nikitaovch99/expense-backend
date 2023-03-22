@@ -1,27 +1,19 @@
 import { Request } from 'express';
+import { testCategory } from '../categories/categories.test-entitites';
 import { Category } from '../categories/categories.entity';
 import { Transaction } from '../transactions/transactions.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { NormalizedUser, Role, User } from './users.entity';
-
-export const testCategory: Category = {
-  id: 1,
-  label: 'Інше',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  user: new User(),
-  transactions: [],
-};
 
 export const testRequest: Request = {} as Request;
 
 export const testTransaction: Transaction = {
   id: 1,
   label: 'NewCar',
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date(2023, 0, 1, 12, 13, 14),
+  updatedAt: new Date(2023, 0, 1, 12, 13, 14),
   category: new Category(),
-  date: new Date(),
+  date: new Date(2023, 0, 1, 12, 13, 14),
   amount: 0,
   user: new User(),
 };
@@ -34,8 +26,8 @@ export const testUser2: User = {
   role: Role.User,
   transactions: [testTransaction],
   categories: [testCategory],
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date(2023, 0, 1, 12, 13, 14),
+  updatedAt: new Date(2023, 0, 1, 12, 13, 14),
 };
 
 export const testUpdateDto: UpdateUserDto = {
@@ -52,8 +44,8 @@ export const updatedUser2: User = {
   role: Role.User,
   transactions: [testTransaction],
   categories: [testCategory],
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date(2023, 0, 1, 12, 13, 14),
+  updatedAt: new Date(2023, 0, 1, 12, 13, 14),
 };
 
 export const testNormalizedAndUpdatedUser2: NormalizedUser = {
@@ -63,8 +55,8 @@ export const testNormalizedAndUpdatedUser2: NormalizedUser = {
   role: Role.User,
   transactions: [testTransaction],
   categories: [testCategory],
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date(2023, 0, 1, 12, 13, 14),
+  updatedAt: new Date(2023, 0, 1, 12, 13, 14),
 };
 export const testNormalizedUser2: NormalizedUser = {
   id: 2,
@@ -73,8 +65,8 @@ export const testNormalizedUser2: NormalizedUser = {
   role: Role.User,
   transactions: [testTransaction],
   categories: [testCategory],
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date(2023, 0, 1, 12, 13, 14),
+  updatedAt: new Date(2023, 0, 1, 12, 13, 14),
 };
 export const testAdmin: User = {
   id: 1,
@@ -84,8 +76,8 @@ export const testAdmin: User = {
   role: Role.Admin,
   transactions: [],
   categories: [],
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date(2023, 0, 1, 12, 13, 14),
+  updatedAt: new Date(2023, 0, 1, 12, 13, 14),
 };
 export const testAdmin2: User = {
   id: 4,
@@ -95,8 +87,8 @@ export const testAdmin2: User = {
   role: Role.Admin,
   transactions: [],
   categories: [],
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date(2023, 0, 1, 12, 13, 14),
+  updatedAt: new Date(2023, 0, 1, 12, 13, 14),
 };
 export const testUser3: User = {
   id: 3,
@@ -106,8 +98,8 @@ export const testUser3: User = {
   role: Role.User,
   transactions: [],
   categories: [],
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date(2023, 0, 1, 12, 13, 14),
+  updatedAt: new Date(2023, 0, 1, 12, 13, 14),
 };
 
 export const normalizedTestUser: NormalizedUser = {
@@ -117,8 +109,8 @@ export const normalizedTestUser: NormalizedUser = {
   role: Role.User,
   transactions: [],
   categories: [],
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date(2023, 0, 1, 12, 13, 14),
+  updatedAt: new Date(2023, 0, 1, 12, 13, 14),
 };
 
 export const testUserDto2 = {
