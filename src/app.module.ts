@@ -24,7 +24,7 @@ import * as cookieParser from 'cookie-parser';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       entities: [User, Category, Transaction, Session],
-      synchronize: process.env.NODE_ENV === 'development' ? true : false,
+      synchronize: true,
     }),
     UsersModule,
     CategoriesModule,
