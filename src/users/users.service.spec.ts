@@ -18,7 +18,6 @@ import {
   testUsers,
   testUserDto2,
   testAdmin,
-  testTransaction,
   testRequest,
   testAdmin2,
   testUpdateDto,
@@ -32,7 +31,6 @@ describe('UserService', () => {
   let userRepository: Repository<User>;
   let categoryRepository: Repository<Category>;
   let categoryService: CategoriesService;
-  let transactionRepository: Repository<Transaction>;
   let authService: SessionAuthService;
 
   beforeEach(async () => {
@@ -88,9 +86,6 @@ describe('UserService', () => {
       getRepositoryToken(Category),
     );
     categoryService = module.get<CategoriesService>(CategoriesService);
-    transactionRepository = module.get<Repository<Transaction>>(
-      getRepositoryToken(Transaction),
-    );
     authService = module.get<SessionAuthService>(SessionAuthService);
   });
 
