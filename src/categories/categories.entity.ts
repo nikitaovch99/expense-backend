@@ -17,13 +17,14 @@ export interface NormalizedCategory {
   createdAt: Date;
   updatedAt: Date;
 }
+export const OtherCategory = { label: 'Інше' };
 
 @Entity({ name: 'categories' })
 export class Category {
   @ApiProperty({ example: '1', description: 'unique identificator' })
   @PrimaryGeneratedColumn()
   id!: number;
-  @ApiProperty({ example: 'Інше', description: 'category name' })
+  @ApiProperty({ example: OtherCategory.label, description: 'category name' })
   @Column()
   label!: string;
 

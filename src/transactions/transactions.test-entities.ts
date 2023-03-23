@@ -1,4 +1,4 @@
-import { Category } from '../categories/categories.entity';
+import { Category, OtherCategory } from '../categories/categories.entity';
 import { Role, User } from '../users/users.entity';
 import { createTransactionDto } from './dto/create-transaction.dto';
 import { updateTransactionDto } from './dto/update-transaction.dto';
@@ -17,7 +17,7 @@ export const testTransactionDto: createTransactionDto = {
   label: 'NewCar',
   date: new Date(2023, 0, 1, 12, 13, 14),
   amount: 0,
-  categoryLabel: 'Інше',
+  categoryLabel: OtherCategory.label,
 };
 
 export const category2: Category = {
@@ -33,12 +33,12 @@ export const testUpdateTransactionDto: updateTransactionDto = {
   label: 'Burger',
   date: new Date(2023, 0, 1, 12, 13, 15),
   amount: 50,
-  categoryLabel: 'Інше',
+  categoryLabel: OtherCategory.label,
 };
 
 export const category1: Category = {
   id: 1,
-  label: 'Інше',
+  label: OtherCategory.label,
   createdAt: new Date(2023, 0, 1, 12, 13, 14),
   updatedAt: new Date(2023, 0, 1, 12, 13, 14),
   user: new User(),

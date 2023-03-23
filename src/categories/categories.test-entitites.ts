@@ -1,6 +1,10 @@
 import { Transaction } from 'src/transactions/transactions.entity';
 import { Role, User } from '../users/users.entity';
-import { Category, NormalizedCategory } from './categories.entity';
+import {
+  Category,
+  NormalizedCategory,
+  OtherCategory,
+} from './categories.entity';
 
 export const testUser2: User = {
   id: 2,
@@ -16,7 +20,7 @@ export const testUser2: User = {
 
 export const testCategory: Category = {
   id: 1,
-  label: 'Інше',
+  label: OtherCategory.label,
   createdAt: new Date(2023, 0, 1, 12, 13, 14),
   updatedAt: new Date(2023, 0, 1, 12, 13, 14),
   user: testUser2,

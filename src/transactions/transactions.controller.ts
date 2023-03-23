@@ -43,7 +43,7 @@ export class TransactionsController {
     return this.transactionService.getAll();
   }
 
-  @ApiOperation({ summary: "Get all user's categories" })
+  @ApiOperation({ summary: "Get all user's transactions" })
   @ApiResponse({ status: 200, type: [Transaction] })
   @UseGuards(IsAuthenticatedGuard)
   @Get()
