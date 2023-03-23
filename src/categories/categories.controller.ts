@@ -58,11 +58,7 @@ export class CategoriesController {
     @Param('id') id: string,
     @Session() session: SessionParam,
   ): Promise<Category> {
-    const category = this.categoryService.getCategoryById(
-      +id,
-      session.passport.user,
-    );
-    return category;
+    return this.categoryService.getCategoryById(+id, session.passport.user);
   }
 
   @ApiOperation({ summary: 'Update a category' })

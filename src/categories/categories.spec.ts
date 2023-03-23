@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CategoriesService } from '../categories/categories.service';
-import { Category } from '../categories/categories.entity';
+import { Category, OtherCategory } from '../categories/categories.entity';
 import { User } from '../users/users.entity';
 import { UsersService } from '../users/users.service';
 import { Transaction } from '../transactions/transactions.entity';
@@ -125,7 +125,7 @@ describe('CategoriesService', () => {
         .spyOn(userService, 'getUserByUsernameOrFail')
         .mockResolvedValue(testUser2);
       await expect(
-        categoryService.createCategory({ label: 'Інше' }, 'test2'),
+        categoryService.createCategory({ label: OtherCategory.label }, 'test2'),
       ).rejects.toThrow(HttpException);
       expect(userService.getUserByUsernameOrFail).toHaveBeenCalledWith('test2');
     });
@@ -135,7 +135,9 @@ describe('CategoriesService', () => {
       jest.spyOn(categoryRepository, 'create').mockReturnValue(testCategory);
       jest.spyOn(categoryRepository, 'save').mockResolvedValue(testCategory);
       const result = await categoryService.createDefaultCategory();
-      expect(categoryRepository.create).toHaveBeenCalledWith({ label: 'Інше' });
+      expect(categoryRepository.create).toHaveBeenCalledWith({
+        label: OtherCategory.label,
+      });
       expect(categoryRepository.save).toHaveBeenCalledWith(testCategory);
       expect(result).toEqual(testCategory);
     });
@@ -217,12 +219,12 @@ describe('CategoriesService', () => {
       await categoryService.removeCategory(3, 'test3');
       expect(categoryService.getCategoryById).toHaveBeenCalledWith(3, 'test3');
       expect(transactionService.updateTransaction).toHaveBeenCalledWith(
-        { categoryLabel: 'Інше' },
+        { categoryLabel: OtherCategory.label },
         updateTransaction.id,
         'test3',
       );
     });
-    it('should throw an exception if there is category is Інше', async () => {
+    it(`should throw an exception if there is category is ${OtherCategory.label}`, async () => {
       jest
         .spyOn(categoryService, 'getCategoryById')
         .mockResolvedValue(testCategory);
@@ -232,14 +234,6 @@ describe('CategoriesService', () => {
     });
   });
   describe('updateCategory method', () => {
-    it('should throw an exception if there is category is Інше', async () => {
-      jest
-        .spyOn(categoryService, 'getCategoryById')
-        .mockResolvedValue(testCategory);
-      await expect(
-        categoryService.updateCategory('NotAnother', 2, 'test2'),
-      ).rejects.toThrow(BadRequestException);
-    });
     it('should call update method with correct params and return updated category ', async () => {
       jest
         .spyOn(categoryService, 'getCategoryById')
@@ -255,12 +249,28 @@ describe('CategoriesService', () => {
       );
       expect(result).toEqual(newNormalizedCategory);
     });
+    it(`should throw an exception if there is category is ${OtherCategory.label}`, async () => {
+      jest
+        .spyOn(categoryService, 'getCategoryById')
+        .mockResolvedValue(testCategory);
+      await expect(
+        categoryService.updateCategory('NotAnother', 2, 'test2'),
+      ).rejects.toThrow(BadRequestException);
+    });
+    it(`should throw an exception if the Dto label is category a ${OtherCategory.label}`, async () => {
+      jest
+        .spyOn(categoryService, 'getCategoryById')
+        .mockResolvedValue(newTestCategory2);
+      await expect(
+        categoryService.updateCategory(OtherCategory.label, 2, 'test2'),
+      ).rejects.toThrow(BadRequestException);
+    });
   });
   describe('GetUsersCategoryByLabel method', () => {
     it('should return a founded Category ', async () => {
       jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(testCategory);
       const result = await categoryService.getUsersCategoryByLabel(
-        'Інше',
+        OtherCategory.label,
         testUser2,
       );
       expect(categoryRepository.findOne).toHaveBeenCalledWith({

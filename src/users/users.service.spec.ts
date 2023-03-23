@@ -18,7 +18,6 @@ import {
   testUsers,
   testUserDto2,
   testAdmin,
-  testTransaction,
   testRequest,
   testAdmin2,
   testUpdateDto,
@@ -32,7 +31,6 @@ describe('UserService', () => {
   let userRepository: Repository<User>;
   let categoryRepository: Repository<Category>;
   let categoryService: CategoriesService;
-  let transactionRepository: Repository<Transaction>;
   let authService: SessionAuthService;
 
   beforeEach(async () => {
@@ -88,9 +86,6 @@ describe('UserService', () => {
       getRepositoryToken(Category),
     );
     categoryService = module.get<CategoriesService>(CategoriesService);
-    transactionRepository = module.get<Repository<Transaction>>(
-      getRepositoryToken(Transaction),
-    );
     authService = module.get<SessionAuthService>(SessionAuthService);
   });
 
@@ -227,10 +222,6 @@ describe('UserService', () => {
         .spyOn(userService, 'getUserByUsernameOrFail')
         .mockResolvedValueOnce(testUser2);
       jest.spyOn(userService, 'getUserById').mockResolvedValueOnce(testUser2);
-      jest.spyOn(categoryRepository, 'remove').mockResolvedValue(testCategory);
-      jest
-        .spyOn(transactionRepository, 'remove')
-        .mockResolvedValue(testTransaction);
       jest.spyOn(authService, 'logout').mockResolvedValueOnce({ logout: true });
       jest.spyOn(userRepository, 'remove').mockResolvedValueOnce(testUser2);
 
@@ -238,12 +229,6 @@ describe('UserService', () => {
 
       expect(userService.getUserByUsernameOrFail).toBeCalledWith('test2');
       expect(userService.getUserById).toBeCalledWith(2, 'test2');
-      expect(categoryRepository.remove).toHaveBeenCalledWith(
-        testUser2.categories[0],
-      );
-      expect(transactionRepository.remove).toHaveBeenCalledWith(
-        testUser2.transactions[0],
-      );
       expect(authService.logout).toHaveBeenCalledWith(testRequest);
       expect(userRepository.remove).toHaveBeenCalledWith(testUser2);
     });

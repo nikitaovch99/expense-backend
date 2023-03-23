@@ -12,7 +12,11 @@ import { TransactionsService } from '../transactions/transactions.service';
 import { Role, User } from '../users/users.entity';
 import { UsersService } from '../users/users.service';
 import { Repository } from 'typeorm';
-import { Category, NormalizedCategory } from './categories.entity';
+import {
+  Category,
+  NormalizedCategory,
+  OtherCategory,
+} from './categories.entity';
 import { createCategoryDto } from './dto/create-category.dto';
 
 @Injectable()
@@ -46,8 +50,10 @@ export class CategoriesService {
     return this.normalizeCategory(savedCategory);
   }
 
-  async createDefaultCategory(): Promise<Category> {
-    const category = this.categoryRepository.create({ label: 'Інше' });
+  createDefaultCategory(): Promise<Category> {
+    const category = this.categoryRepository.create({
+      label: OtherCategory.label,
+    });
     return this.categoryRepository.save(category);
   }
 
@@ -69,28 +75,29 @@ export class CategoriesService {
     return category;
   }
 
-  async getAll(): Promise<Category[]> {
+  getAll(): Promise<Category[]> {
     return this.categoryRepository.find();
   }
 
   async getAllUserCategories(username: string): Promise<Category[]> {
     const user = await this.userService.getUserByUsernameOrFail(username);
-    const categories = await this.categoryRepository.find({
+    return this.categoryRepository.find({
       where: { user: { id: user.id } },
     });
-    return categories;
   }
 
   async removeCategory(id: number, username: string): Promise<void> {
     const category = await this.getCategoryById(id, username);
-    if (category.label === 'Інше') {
-      throw new BadRequestException('Can not delete category Інше');
+    if (category.label === OtherCategory.label) {
+      throw new BadRequestException(
+        `Can not delete category ${OtherCategory.label}`,
+      );
     }
 
     await Promise.all(
       category.transactions.map(async (transaction) => {
         await this.transactionService.updateTransaction(
-          { categoryLabel: 'Інше' },
+          { categoryLabel: OtherCategory.label },
           transaction.id,
           username,
         );
@@ -106,8 +113,13 @@ export class CategoriesService {
     username: string,
   ): Promise<NormalizedCategory> {
     const category = await this.getCategoryById(id, username);
-    if (category.label === 'Інше') {
-      throw new BadRequestException('Can not update category Інше');
+    if (
+      category.label === OtherCategory.label ||
+      label === OtherCategory.label
+    ) {
+      throw new BadRequestException(
+        `Can not update category ${OtherCategory.label}`,
+      );
     }
 
     category && (category.label = label);
@@ -124,12 +136,10 @@ export class CategoriesService {
       throw new NotFoundException('Category not found');
     }
 
-    const savedCategory = this.categoryRepository.findOne({
+    return this.categoryRepository.findOne({
       where: { id: category.id },
       relations: ['transactions'],
     });
-
-    return savedCategory;
   }
 
   normalizeCategory({ id, label, createdAt, updatedAt }): NormalizedCategory {

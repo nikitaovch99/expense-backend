@@ -44,14 +44,13 @@ export class TransactionsService {
 
   async getUserTransactions(username: string): Promise<Transaction[]> {
     const user = await this.userService.getUserByUsernameOrFail(username);
-    const transactions = await this.transactionRepository.find({
+    return this.transactionRepository.find({
       where: { user: { id: user.id } },
       relations: ['category'],
     });
-    return transactions;
   }
 
-  async getAll(): Promise<Transaction[]> {
+  getAll(): Promise<Transaction[]> {
     return this.transactionRepository.find();
   }
 

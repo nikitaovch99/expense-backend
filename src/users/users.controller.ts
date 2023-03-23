@@ -15,7 +15,7 @@ import { Roles } from '../session-auth/guards/roles/roles-auth.decorator';
 import { RolesGuard } from '../session-auth/guards/roles/roles.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './users.entity';
+import { NormalizedUser, User } from './users.entity';
 import { UsersService } from './users.service';
 import { IsAuthenticatedGuard } from '../session-auth/guards/is-authenticated/is-authenticated.guard';
 import { Request } from 'express';
@@ -31,7 +31,7 @@ export class UsersController {
   @Post()
   @Roles('ADMIN')
   @UseGuards(IsAuthenticatedGuard, RolesGuard)
-  create(@Body() userDto: CreateUserDto) {
+  create(@Body() userDto: CreateUserDto): Promise<User> {
     return this.userService.createUser(userDto);
   }
 
@@ -40,18 +40,19 @@ export class UsersController {
   @Roles('ADMIN')
   @UseGuards(IsAuthenticatedGuard, RolesGuard)
   @Get()
-  getAll() {
-    const users = this.userService.getAllUsers();
-    return users;
+  getAll(): Promise<NormalizedUser[]> {
+    return this.userService.getAllUsers();
   }
 
   @ApiOperation({ summary: 'Get a user' })
   @ApiResponse({ status: 200, type: User })
   @UseGuards(IsAuthenticatedGuard)
   @Get(':id')
-  getOne(@Param('id') id: string, @Session() session: SessionParam) {
-    const user = this.userService.getUserById(+id, session.passport.user);
-    return user;
+  getOne(
+    @Param('id') id: string,
+    @Session() session: SessionParam,
+  ): Promise<User> {
+    return this.userService.getUserById(+id, session.passport.user);
   }
 
   @ApiOperation({ summary: 'Delete a User' })
@@ -62,7 +63,7 @@ export class UsersController {
     @Param('id') id: string,
     @Session() session: SessionParam,
     @Req() req: Request,
-  ) {
+  ): Promise<void> {
     return this.userService.remove(+id, session.passport.user, req);
   }
 
@@ -75,7 +76,7 @@ export class UsersController {
     @Req() req: Request,
     @Session() session: SessionParam,
     @Param('id') id: string,
-  ) {
+  ): Promise<NormalizedUser> {
     return this.userService.update(+id, session.passport.user, dto, req);
   }
 }
