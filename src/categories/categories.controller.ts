@@ -6,14 +6,13 @@ import {
   Param,
   Patch,
   Post,
-  Session,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SessionPassport } from 'src/session-auth/session.decorator';
 import { IsAuthenticatedGuard } from '../session-auth/guards/is-authenticated/is-authenticated.guard';
 import { Roles } from '../session-auth/guards/roles/roles-auth.decorator';
 import { RolesGuard } from '../session-auth/guards/roles/roles.guard';
-import { SessionParam } from '../session-auth/session.entity';
 import { Category, NormalizedCategory } from './categories.entity';
 import { CategoriesService } from './categories.service';
 import { createCategoryDto } from './dto/create-category.dto';
@@ -28,9 +27,9 @@ export class CategoriesController {
   @Post()
   create(
     @Body() dto: createCategoryDto,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
   ): Promise<NormalizedCategory> {
-    return this.categoryService.createCategory(dto, session.passport.user);
+    return this.categoryService.createCategory(dto, username);
   }
 
   @ApiOperation({ summary: 'Get all categories (for Admins)' })
@@ -46,8 +45,8 @@ export class CategoriesController {
   @ApiResponse({ status: 200, type: [Category] })
   @UseGuards(IsAuthenticatedGuard)
   @Get()
-  getUserCategories(@Session() session: SessionParam): Promise<Category[]> {
-    return this.categoryService.getAllUserCategories(session.passport.user);
+  getUserCategories(@SessionPassport() username: string): Promise<Category[]> {
+    return this.categoryService.getAllUserCategories(username);
   }
 
   @ApiOperation({ summary: 'Get one category by id' })
@@ -56,9 +55,9 @@ export class CategoriesController {
   @Get(':id')
   getById(
     @Param('id') id: string,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
   ): Promise<Category> {
-    return this.categoryService.getCategoryById(+id, session.passport.user);
+    return this.categoryService.getCategoryById(+id, username);
   }
 
   @ApiOperation({ summary: 'Update a category' })
@@ -68,13 +67,9 @@ export class CategoriesController {
   update(
     @Body('label') label: string,
     @Param('id') id: string,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
   ): Promise<NormalizedCategory> {
-    return this.categoryService.updateCategory(
-      label,
-      +id,
-      session.passport.user,
-    );
+    return this.categoryService.updateCategory(label, +id, username);
   }
 
   @ApiOperation({ summary: 'Delete one category' })
@@ -83,8 +78,8 @@ export class CategoriesController {
   @Delete(':id')
   remove(
     @Param('id') id: string,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
   ): Promise<void> {
-    return this.categoryService.removeCategory(+id, session.passport.user);
+    return this.categoryService.removeCategory(+id, username);
   }
 }
