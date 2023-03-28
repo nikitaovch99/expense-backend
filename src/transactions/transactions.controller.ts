@@ -6,14 +6,13 @@ import {
   Param,
   Patch,
   Post,
-  Session,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SessionPassport } from 'src/session-auth/session.decorator';
 import { IsAuthenticatedGuard } from '../session-auth/guards/is-authenticated/is-authenticated.guard';
 import { Roles } from '../session-auth/guards/roles/roles-auth.decorator';
 import { RolesGuard } from '../session-auth/guards/roles/roles.guard';
-import { SessionParam } from '../session-auth/session.entity';
 import { createTransactionDto } from './dto/create-transaction.dto';
 import { updateTransactionDto } from './dto/update-transaction.dto';
 import { NormalizedTransaction, Transaction } from './transactions.entity';
@@ -29,9 +28,9 @@ export class TransactionsController {
   @Post()
   create(
     @Body() dto: createTransactionDto,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
   ): Promise<NormalizedTransaction> {
-    return this.transactionService.create(dto, session.passport.user);
+    return this.transactionService.create(dto, username);
   }
 
   @ApiOperation({ summary: 'Get all transactions (for Admins)' })
@@ -48,9 +47,9 @@ export class TransactionsController {
   @UseGuards(IsAuthenticatedGuard)
   @Get()
   getUserTransactions(
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
   ): Promise<Transaction[]> {
-    return this.transactionService.getUserTransactions(session.passport.user);
+    return this.transactionService.getUserTransactions(username);
   }
 
   @ApiOperation({ summary: 'Get one category by id' })
@@ -59,12 +58,9 @@ export class TransactionsController {
   @Get(':id')
   getById(
     @Param('id') id: string,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
   ): Promise<Transaction> {
-    return this.transactionService.getTransactionById(
-      +id,
-      session.passport.user,
-    );
+    return this.transactionService.getTransactionById(+id, username);
   }
 
   @ApiOperation({ summary: 'Delete one category' })
@@ -74,13 +70,9 @@ export class TransactionsController {
   update(
     @Body() dto: updateTransactionDto,
     @Param('id') id: string,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
   ): Promise<NormalizedTransaction> {
-    return this.transactionService.updateTransaction(
-      dto,
-      +id,
-      session.passport.user,
-    );
+    return this.transactionService.updateTransaction(dto, +id, username);
   }
 
   @ApiOperation({ summary: 'Delete one category' })
@@ -89,11 +81,8 @@ export class TransactionsController {
   @Delete(':id')
   remove(
     @Param('id') id: string,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
   ): Promise<void> {
-    return this.transactionService.removeTransaction(
-      +id,
-      session.passport.user,
-    );
+    return this.transactionService.removeTransaction(+id, username);
   }
 }
