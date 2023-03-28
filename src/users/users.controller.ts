@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
   Req,
-  Session,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -19,7 +18,7 @@ import { NormalizedUser, User } from './users.entity';
 import { UsersService } from './users.service';
 import { IsAuthenticatedGuard } from '../session-auth/guards/is-authenticated/is-authenticated.guard';
 import { Request } from 'express';
-import { SessionParam } from '../session-auth/session.entity';
+import { SessionPassport } from 'src/session-auth/session.decorator';
 
 @ApiTags('Users')
 @Controller('users')
@@ -50,9 +49,10 @@ export class UsersController {
   @Get(':id')
   getOne(
     @Param('id') id: string,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
   ): Promise<User> {
-    return this.userService.getUserById(+id, session.passport.user);
+    console.log('user', username);
+    return this.userService.getUserById(+id, username);
   }
 
   @ApiOperation({ summary: 'Delete a User' })
@@ -61,10 +61,10 @@ export class UsersController {
   @UseGuards(IsAuthenticatedGuard)
   remove(
     @Param('id') id: string,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
     @Req() req: Request,
   ): Promise<void> {
-    return this.userService.remove(+id, session.passport.user, req);
+    return this.userService.remove(+id, username, req);
   }
 
   @ApiOperation({ summary: 'Update a User' })
@@ -74,9 +74,9 @@ export class UsersController {
   update(
     @Body() dto: UpdateUserDto,
     @Req() req: Request,
-    @Session() session: SessionParam,
+    @SessionPassport() username: string,
     @Param('id') id: string,
   ): Promise<NormalizedUser> {
-    return this.userService.update(+id, session.passport.user, dto, req);
+    return this.userService.update(+id, username, dto, req);
   }
 }
